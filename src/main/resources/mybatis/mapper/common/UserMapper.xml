@@ -1,0 +1,15 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.rxcats.datasourceroutedemo.mapper.common.UserMapper">
+    <select id="selectOne" resultType="User" parameterType="String">
+		SELECT userId, platformId, shardNo FROM tb_user WHERE userId = #{playerId}
+	</select>
+
+    <insert id="insert" parameterType="User">
+		INSERT INTO tb_user (userId, platformId, shardNo) VALUES(#{userId}, #{platformId}, #{shardNo})
+		ON DUPLICATE KEY UPDATE userId = #{userId}
+	</insert>
+
+    <delete id="delete" parameterType="String">
+		DELETE FROM tb_user WHERE userId = #{userId}
+	</delete>
+</mapper>
