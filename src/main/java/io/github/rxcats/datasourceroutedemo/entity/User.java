@@ -1,5 +1,7 @@
 package io.github.rxcats.datasourceroutedemo.entity;
 
+import java.time.LocalDateTime;
+
 import lombok.Data;
 
 @Data
@@ -7,8 +9,8 @@ public class User {
 
     private String userId;
 
-    private String platformId;
+    private String nickname;
 
-    private int shardNo;
+    private LocalDateTime createdAt;
 
 }
