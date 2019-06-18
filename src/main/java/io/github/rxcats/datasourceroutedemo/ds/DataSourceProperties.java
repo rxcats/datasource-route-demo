@@ -12,6 +12,7 @@ public class DataSourceProperties {
     private String username;
     private String password;
     private String driverClassName;
+    private String mapperPath;
     private String commonUrl;
     private List<String> userUrl;
 }

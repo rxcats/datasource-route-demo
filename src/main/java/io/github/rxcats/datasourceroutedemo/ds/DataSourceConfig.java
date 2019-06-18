@@ -88,7 +88,7 @@ public class DataSourceConfig {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
         bean.setDataSource(dataSource);
         bean.setTypeAliasesPackage(DefaultConfigEntity.class.getPackageName());
-        bean.setMapperLocations(context.getResources("classpath:mybatis/mapper/**/*.xml"));
+        bean.setMapperLocations(context.getResources(properties.getMapperPath()));
 
         // guide : http://www.mybatis.org/mybatis-3/ko/configuration.html#settings
         org.apache.ibatis.session.Configuration cnf = new org.apache.ibatis.session.Configuration();
