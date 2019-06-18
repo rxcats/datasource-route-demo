@@ -32,33 +32,33 @@ public class DataSourceConfig {
     private DataSourceProperties properties;
 
     private DataSource commonDatasource() {
-        var config = hikariConfig();
-        config.setJdbcUrl(properties.getCommonUrl());
-        config.setUsername(properties.getUsername());
-        config.setPassword(properties.getPassword());
+        var config = new HikariConfig();
+        config.setDriverClassName(properties.getDriverClassName());
+        config.setPoolName(properties.getCommon().getPoolName());
+        config.setConnectionTimeout(properties.getCommon().getConnectionTimeout());
+        config.setIdleTimeout(properties.getCommon().getIdleTimeout());
+        config.setMaximumPoolSize(properties.getCommon().getMaximumPoolSize());
+        config.setUsername(properties.getCommon().getUsername());
+        config.setPassword(properties.getCommon().getPassword());
+        config.setJdbcUrl(properties.getCommon().getJdbcUrl());
         return new HikariDataSource(config);
     }
 
     private List<DataSource> userDatasourceList() {
-        var list = new ArrayList<DataSource>();
-        for (var url : properties.getUserUrl()) {
-            var config = hikariConfig();
-            config.setJdbcUrl(url);
-            config.setUsername(properties.getUsername());
-            config.setPassword(properties.getPassword());
-            list.add(new HikariDataSource(config));
+        var dataSources = new ArrayList<DataSource>();
+        for (var user : properties.getUser()) {
+            var config = new HikariConfig();
+            config.setDriverClassName(properties.getDriverClassName());
+            config.setPoolName(user.getPoolName());
+            config.setConnectionTimeout(user.getConnectionTimeout());
+            config.setIdleTimeout(user.getIdleTimeout());
+            config.setMaximumPoolSize(user.getMaximumPoolSize());
+            config.setUsername(user.getUsername());
+            config.setPassword(user.getPassword());
+            config.setJdbcUrl(user.getJdbcUrl());
+            dataSources.add(new HikariDataSource(config));
         }
-        return list;
-    }
-
-    private HikariConfig hikariConfig() {
-        var config = new HikariConfig();
-        config.setMinimumIdle(2);
-        config.setMaximumPoolSize(10);
-        config.setConnectionTimeout(300000);
-        config.setAutoCommit(true);
-        config.setDriverClassName(properties.getDriverClassName());
-        return config;
+        return dataSources;
     }
 
     @Bean
@@ -75,7 +75,7 @@ public class DataSourceConfig {
         }
 
         // datasource routing configuration
-        DataSourceRouter router = new DataSourceRouter();
+        var router = new DataSourceRouter();
 
         // default datasource
         router.setDefaultTargetDataSource(map.get("common"));
@@ -85,13 +85,13 @@ public class DataSourceConfig {
 
     @Bean
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource, ApplicationContext context) throws Exception {
-        SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
+        var bean = new SqlSessionFactoryBean();
         bean.setDataSource(dataSource);
         bean.setTypeAliasesPackage(DefaultConfigEntity.class.getPackageName());
         bean.setMapperLocations(context.getResources(properties.getMapperPath()));
 
         // guide : http://www.mybatis.org/mybatis-3/ko/configuration.html#settings
-        org.apache.ibatis.session.Configuration cnf = new org.apache.ibatis.session.Configuration();
+        var cnf = new org.apache.ibatis.session.Configuration();
         cnf.setDatabaseId("mysql");
         cnf.setMapUnderscoreToCamelCase(true);
         cnf.setDefaultExecutorType(ExecutorType.REUSE);
@@ -110,7 +110,7 @@ public class DataSourceConfig {
 
     @Bean
     public PlatformTransactionManager transactionManager() {
-        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(dataSource());
+        var transactionManager = new DataSourceTransactionManager(dataSource());
         transactionManager.setGlobalRollbackOnParticipationFailure(false);
         return transactionManager;
     }

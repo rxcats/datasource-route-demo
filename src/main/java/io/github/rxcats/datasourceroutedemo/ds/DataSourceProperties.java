@@ -9,10 +9,23 @@ import lombok.Data;
 @Data
 @ConfigurationProperties("app.database")
 public class DataSourceProperties {
-    private String username;
-    private String password;
     private String driverClassName;
     private String mapperPath;
-    private String commonUrl;
-    private List<String> userUrl;
+    private Boolean autoCommit;
+    private List<Integer> shardTargets;
+
+    private DatabaseProp common;
+
+    private List<DatabaseProp> user;
+
+    @Data
+    public static class DatabaseProp {
+        private String poolName;
+        private Long connectionTimeout;
+        private Long idleTimeout;
+        private Integer maximumPoolSize;
+        private String username;
+        private String password;
+        private String jdbcUrl;
+    }
 }

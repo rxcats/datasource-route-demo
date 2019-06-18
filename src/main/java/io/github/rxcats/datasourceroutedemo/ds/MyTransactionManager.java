@@ -22,6 +22,10 @@ public class MyTransactionManager extends DefaultTransactionDefinition {
 		status = transactionManager.getTransaction(this);
 	}
 
+	public boolean completed() {
+		return status.isCompleted();
+	}
+
 	public void commit() throws TransactionException {
 		if (!status.isCompleted()) {
 			transactionManager.commit(status);
