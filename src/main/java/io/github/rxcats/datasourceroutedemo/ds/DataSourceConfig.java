@@ -33,6 +33,7 @@ public class DataSourceConfig {
 
     private DataSource commonDatasource() {
         var config = new HikariConfig();
+        config.setAutoCommit(properties.getAutoCommit());
         config.setDriverClassName(properties.getDriverClassName());
         config.setPoolName(properties.getCommon().getPoolName());
         config.setConnectionTimeout(properties.getCommon().getConnectionTimeout());
@@ -48,6 +49,7 @@ public class DataSourceConfig {
         var dataSources = new ArrayList<DataSource>();
         for (var user : properties.getUser()) {
             var config = new HikariConfig();
+            config.setAutoCommit(properties.getAutoCommit());
             config.setDriverClassName(properties.getDriverClassName());
             config.setPoolName(user.getPoolName());
             config.setConnectionTimeout(user.getConnectionTimeout());
