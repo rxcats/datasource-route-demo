@@ -13,6 +13,8 @@ public interface UserMapper {
 
     int delete(String userId);
 
+    int deleteAll();
+
     int errorInsert(User user);
 
 }

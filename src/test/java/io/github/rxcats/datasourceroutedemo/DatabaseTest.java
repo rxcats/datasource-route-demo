@@ -10,18 +10,19 @@ import java.util.stream.LongStream;
 import javax.annotation.Resource;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.BadSqlGrammarException;
-import org.springframework.lang.NonNull;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import io.github.rxcats.datasourceroutedemo.ds.DataSourceContextHolder;
-import io.github.rxcats.datasourceroutedemo.ds.MyTransactionManager;
 import io.github.rxcats.datasourceroutedemo.entity.User;
 import io.github.rxcats.datasourceroutedemo.mapper.common.UserMapper;
+import io.github.rxcats.datasourceroutedemo.service.QueryService;
 
 @Slf4j
 @SpringBootTest
@@ -31,7 +32,7 @@ class DatabaseTest {
     private UserMapper userMapper;
 
     @Autowired
-    MyTransactionManager txManager;
+    private QueryService queryService;
 
     private User create() {
         var u = new User();
@@ -41,11 +42,22 @@ class DatabaseTest {
         return u;
     }
 
+    @BeforeEach
+    void before() {
+        queryService.execute("common", () -> {
+            userMapper.deleteAll();
+            return null;
+        });
+    }
+
+    @Test
+    void contextHolderIfNull() {
+        Assertions.assertThrows(NullPointerException.class, () -> DataSourceContextHolder.set(null));
+    }
+
     @Test
     void crud() {
-        try {
-            DataSourceContextHolder.set("common");
-
+        queryService.execute("common", () -> {
             int insertCnt = userMapper.insert(create());
             assertThat(insertCnt).isEqualTo(1);
 
@@ -56,45 +68,52 @@ class DatabaseTest {
 
             int deleteCnt = userMapper.delete("1000001");
             assertThat(deleteCnt).isEqualTo(1);
-        } finally {
-            DataSourceContextHolder.clear();
-        }
+
+            return null;
+        });
+    }
+
+    @Test
+    void txInsert() {
+        queryService.executeTx("common", () -> {
+            int insertCnt = userMapper.insert(create());
+            assertThat(insertCnt).isEqualTo(1);
+            return null;
+        });
+
+        queryService.execute("common", () -> {
+            User user = userMapper.selectOne("1000001");
+            log.info("{}", user);
+            assertThat(user).isNotNull();
+            return null;
+        });
     }
 
     @Test
     void txRollback() {
-        try {
-            DataSourceContextHolder.set("common");
-            txManager.start();
+        queryService.executeRollback("common", () -> {
             int insertCnt = userMapper.insert(create());
             log.info("{}", insertCnt);
-        } finally {
-            txManager.rollback();
-            DataSourceContextHolder.clear();
-        }
+            return null;
+        });
 
-        try {
-            DataSourceContextHolder.set("common");
+        queryService.execute("common", () -> {
             User user = userMapper.selectOne("1000001");
             log.info("{}", user);
             assertThat(user).isNull();
-        } finally {
-            DataSourceContextHolder.clear();
-        }
+            return null;
+        });
     }
 
     @Test
     void invalidInsertSql() {
-        Assertions.assertThrows(BadSqlGrammarException.class, () -> {
-            try {
-                DataSourceContextHolder.set("common");
+        Assertions.assertThrows(BadSqlGrammarException.class, () ->
+            queryService.execute("common", () -> {
                 int insertCnt = userMapper.errorInsert(create());
                 log.info("{}", insertCnt);
-            } finally {
-                DataSourceContextHolder.clear();
-                log.info("finally");
-            }
-        });
+                return null;
+            })
+        );
     }
 
     private int getHashCode(@NonNull String userId) {

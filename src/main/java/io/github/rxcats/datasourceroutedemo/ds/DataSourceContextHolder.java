@@ -1,9 +1,11 @@
 package io.github.rxcats.datasourceroutedemo.ds;
 
+import lombok.NonNull;
+
 public class DataSourceContextHolder {
     private static final ThreadLocal<String> CONTEXT = new ThreadLocal<>();
 
-    public static void set(String dbType) {
+    public static void set(@NonNull String dbType) {
         CONTEXT.set(dbType);
     }
 

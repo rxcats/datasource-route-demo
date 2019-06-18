@@ -13,6 +13,10 @@
 		DELETE FROM tb_user WHERE userId = #{userId}
 	</delete>
 
+	<delete id="deleteAll">
+		DELETE FROM tb_user
+	</delete>
+
 	<insert id="errorInsert" parameterType="User">
 		INSERT INTO tb_user (userId, nickname, createdAt, ooo) VALUES(#{userId}, #{nickname}, #{createdAt})
 		ON DUPLICATE KEY UPDATE userId = #{userId}
