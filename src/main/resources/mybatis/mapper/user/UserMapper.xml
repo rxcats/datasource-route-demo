@@ -1,5 +1,5 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="io.github.rxcats.datasourceroutedemo.mapper.common.UserMapper">
+<mapper namespace="io.github.rxcats.datasourceroutedemo.mapper.user.UserMapper">
     <select id="selectOne" resultType="User" parameterType="String">
 		SELECT userId, nickname, createdAt FROM tb_user WHERE userId = #{playerId}
 	</select>
@@ -16,9 +16,4 @@
 	<delete id="deleteAll">
 		DELETE FROM tb_user
 	</delete>
-
-	<insert id="errorInsert" parameterType="User">
-		INSERT INTO tb_user (userId, nickname, createdAt, ooo) VALUES(#{userId}, #{nickname}, #{createdAt})
-		ON DUPLICATE KEY UPDATE userId = #{userId}
-	</insert>
 </mapper>

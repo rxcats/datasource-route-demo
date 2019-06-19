@@ -1,4 +1,4 @@
-package io.github.rxcats.datasourceroutedemo.mapper.common;
+package io.github.rxcats.datasourceroutedemo.mapper.user;
 
 import org.apache.ibatis.annotations.Mapper;
 
