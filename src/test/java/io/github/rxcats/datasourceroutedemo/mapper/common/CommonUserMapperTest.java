@@ -14,7 +14,6 @@ import org.springframework.jdbc.BadSqlGrammarException;
 import lombok.extern.slf4j.Slf4j;
 
 import io.github.rxcats.datasourceroutedemo.TestData;
-import io.github.rxcats.datasourceroutedemo.ds.DataSourceContextHolder;
 import io.github.rxcats.datasourceroutedemo.entity.CommonUser;
 import io.github.rxcats.datasourceroutedemo.service.query.DbType;
 import io.github.rxcats.datasourceroutedemo.service.query.QueryHelper;
@@ -35,11 +34,6 @@ class CommonUserMapperTest {
             commonUserMapper.deleteAll();
             return null;
         });
-    }
-
-    @Test
-    void contextHolderIfNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> DataSourceContextHolder.set(null));
     }
 
     @Test
