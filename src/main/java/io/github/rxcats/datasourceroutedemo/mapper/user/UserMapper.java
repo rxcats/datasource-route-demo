@@ -15,6 +15,4 @@ public interface UserMapper {
 
     int deleteAll();
 
-    int errorInsert(User user);
-
 }
