@@ -15,4 +15,6 @@ public interface UserMapper {
 
     int deleteAll();
 
+    int insertOnly(User user);
+
 }

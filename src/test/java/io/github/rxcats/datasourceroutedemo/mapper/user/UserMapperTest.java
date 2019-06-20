@@ -4,10 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import javax.annotation.Resource;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DuplicateKeyException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,6 +42,25 @@ class UserMapperTest {
 
         assertThat(r0).isEqualTo(1);
         assertThat(r1).isEqualTo(1);
+    }
+
+    @Test
+    void insertDuplicateKeyException() {
+        Assertions.assertThrows(DuplicateKeyException.class, () -> {
+            queryHelper.execute(DbType.user, 0, () -> userMapper.insertOnly(TestData.user()));
+            queryHelper.execute(DbType.user, 0, () -> userMapper.insertOnly(TestData.user()));
+        });
+    }
+
+    @Test
+    void insertDuplicateKeyExceptionTryCatch() {
+        try {
+            queryHelper.execute(DbType.user, 0, () -> userMapper.insertOnly(TestData.user()));
+            queryHelper.execute(DbType.user, 0, () -> userMapper.insertOnly(TestData.user()));
+        } catch (DuplicateKeyException e) {
+            log.info(e.getMessage(), e);
+            assertThat(e).hasMessageContaining("Duplicate entry");
+        }
     }
 
     @Test

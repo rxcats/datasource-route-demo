@@ -16,4 +16,8 @@
 	<delete id="deleteAll">
 		DELETE FROM tb_user
 	</delete>
+
+	<insert id="insertOnly" parameterType="User">
+		INSERT INTO tb_user (userId, nickname, createdAt) VALUES(#{userId}, #{nickname}, #{createdAt})
+	</insert>
 </mapper>
