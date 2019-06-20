@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import io.github.rxcats.datasourceroutedemo.entity.CommonUser;
 import io.github.rxcats.datasourceroutedemo.entity.User;
-import io.github.rxcats.datasourceroutedemo.util.UserIdShard;
 
 public class TestData {
 
@@ -16,7 +15,7 @@ public class TestData {
         var u = new CommonUser();
         u.setUserId("1000001");
         u.setNickname("Guest1000001");
-        u.setShardNo(UserIdShard.get(u.getUserId()));
+        u.setShardNo(0);
         u.setCreatedAt(LocalDateTime.now());
         return u;
     }

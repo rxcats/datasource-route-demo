@@ -8,15 +8,22 @@ import java.util.stream.LongStream;
 
 import org.junit.jupiter.api.Test;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 class UserIdShardTest {
+
+    private int hash(@NonNull String userId) {
+        int hash = userId.hashCode();
+        return (hash < 0) ? hash * -1 : hash;
+    }
+
     @Test
     void shard() {
         Map<Integer, Integer> sum = new HashMap<>();
         LongStream.rangeClosed(1_000_001, 9_000_000).forEach(i -> {
-            int shard = UserIdShard.get(i + "") % 2;
+            int shard = hash(i + "") % 2;
 
             Integer cnt = sum.get(shard);
             if (cnt == null) {
