@@ -9,4 +9,11 @@ public class UserShardNo {
 
     private Integer shardNo;
 
+    public static UserShardNo of(String userId, Integer shardNo) {
+        var value = new UserShardNo();
+        value.userId = userId;
+        value.shardNo = shardNo;
+        return value;
+    }
+
 }

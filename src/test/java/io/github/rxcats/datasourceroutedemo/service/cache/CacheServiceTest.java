@@ -16,11 +16,11 @@ import io.github.rxcats.datasourceroutedemo.TestData;
 import io.github.rxcats.datasourceroutedemo.entity.CommonUser;
 
 @Slf4j
-@SpringBootTest(classes = CacheServiceImpl.class)
+@SpringBootTest(classes = { CacheServiceImpl.class })
 class CacheServiceTest {
 
     @Autowired
-    private CacheServiceImpl cacheService;
+    private CacheService cacheService;
 
     @BeforeEach
     void setUp() {

@@ -4,7 +4,8 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum CacheKey {
-    user("user", 300, "")
+    user("user", 300, ""),
+    usershard("usershard", 86400, "")
     ;
 
     private final String prefix;
