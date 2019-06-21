@@ -92,7 +92,7 @@ public class UserService {
      * commondb 에서 사용자 조회
      * 캐시를 먼저 조회하여 본 후 DB에 Query 를 한다., DB Query 결과는 캐시에 저장 
      */
-    private CommonUser getCommonUser(String userId, boolean useCache) {
+    public CommonUser getCommonUser(String userId, boolean useCache) {
         return cacheService.getViaCache(CacheKey.user, userId, () ->
             queryHelper.execute(DbType.common, null, () -> commonUserMapper.selectOne(userId)), useCache);
     }
