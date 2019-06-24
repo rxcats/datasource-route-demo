@@ -11,7 +11,6 @@ public class UserIdShard {
     }
 
     public static int get(@NonNull String userId, @NonNull List<Integer> targets) {
-        int hash = userId.hashCode();
-        return targets.get(Math.abs(hash)) % targets.size();
+        return targets.get(Math.abs(userId.hashCode()) % targets.size());
     }
 }
